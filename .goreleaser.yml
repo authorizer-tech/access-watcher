@@ -1,0 +1,43 @@
+project_name: access-watcher
+
+before:
+  hooks:
+    - go mod download
+    - go generate ./...
+builds:
+  - main: ./cmd/access-watcher/main.go
+    binary: bin/access-watcher
+    env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
+    goos:
+      - linux
+      - darwin
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      386: i386
+      amd64: x86_64
+dockers:
+  -
+    image_templates:
+    - "iam/access-watcher:{{ .Tag }}"
+    - "iam/access-watcher:v{{ .Major }}"
+    - "iam/access-watcher:v{{ .Major }}.{{ .Minor }}"
+    - "iam/access-watcher:latest"
+    - "iam/access-watcher:zanzibar"
+    - "gcr.io/jon-whit/iam/access-watcher:zanzibar"
+    extra_files:
+    - testdata
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
