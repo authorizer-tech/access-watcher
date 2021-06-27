@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"fmt"
 	"net"
@@ -12,11 +13,11 @@ import (
 	"syscall"
 	"time"
 
-	watchpb "github.com/authorizer-tech/access-watcher/gen/go/authorizer-tech/accesswatcher/v1alpha1"
+	watchpb "github.com/authorizer-tech/access-watcher/genprotos/authorizer/accesswatcher/v1alpha1"
 	watcher "github.com/authorizer-tech/access-watcher/internal"
 	"github.com/authorizer-tech/access-watcher/internal/datastores/postgres"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -38,7 +39,7 @@ type Config struct {
 		Enabled bool
 	}
 
-	Postgres struct {
+	CockroachDB struct {
 		Host     string
 		Port     int
 		Database string
@@ -63,20 +64,42 @@ func main() {
 
 	pgUsername := viper.GetString("POSTGRES_USERNAME")
 	pgPassword := viper.GetString("POSTGRES_PASSWORD")
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s",
-		pgUsername,
-		pgPassword,
-		cfg.Postgres.Host,
-		cfg.Postgres.Port,
-		cfg.Postgres.Database,
-	)
 
-	pool, err := pgxpool.Connect(context.TODO(), dsn)
-	if err != nil {
-		log.Fatalf("Failed to establish a connection to Postgres database: %v", err)
+	dbHost := cfg.CockroachDB.Host
+	if dbHost == "" {
+		dbHost = "localhost"
+		log.Warn("The database host was not configured. Defaulting to 'localhost'")
 	}
 
-	store, err := postgres.NewChangelogDatastore(pool)
+	dbPort := cfg.CockroachDB.Port
+	if dbPort == 0 {
+		dbPort = 26257
+		log.Warn("The database port was not configured. Defaulting to '26257'")
+	}
+
+	dbName := cfg.CockroachDB.Database
+	if dbName == "" {
+		dbName = "postgres"
+		log.Warn("The database name was not configured. Defaulting to 'postgres'")
+	}
+
+	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable",
+		pgUsername,
+		pgPassword,
+		dbHost,
+		dbPort,
+		dbName,
+	)
+
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatalf("Failed to establish a connection to the database: %v", err)
+	}
+	if err := db.Ping(); err != nil {
+		log.Fatalf("Failed to connect to the database: %v", err)
+	}
+
+	store, err := postgres.NewChangelogDatastore(db)
 	if err != nil {
 		log.Fatalf("Failed to initialize the Changelog datastore: %v", err)
 	}
@@ -170,7 +193,9 @@ func main() {
 		log.Errorf("Failed to gracefully close the access-watcher: %v", err)
 	}
 
-	pool.Close()
+	if err := db.Close(); err != nil {
+		log.Errorf("Failed to gracefully close the database connection: %v", err)
+	}
 
 	log.Info("Shutdown Complete. Goodbye 👋")
 }

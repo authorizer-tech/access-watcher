@@ -71,8 +71,8 @@
       "type": "string",
       "enum": [
         "ACTION_UNSPECIFIED",
-        "INSERT",
-        "DELETE"
+        "ACTION_INSERT",
+        "ACTION_DELETE"
       ],
       "default": "ACTION_UNSPECIFIED"
     },

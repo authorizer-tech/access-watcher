@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	watchpb "github.com/authorizer-tech/access-watcher/gen/go/authorizer-tech/accesswatcher/v1alpha1"
+	watchpb "github.com/authorizer-tech/access-watcher/genprotos/authorizer/accesswatcher/v1alpha1"
 	"github.com/pkg/errors"
 )
 
-var ErrInvalidSubjectSetString = fmt.Errorf("The provided SubjectSet string is malformed.")
-var ErrInvalidRelationTupleString = fmt.Errorf("The RelationTuple string is malformed.")
+var ErrInvalidSubjectSetString = fmt.Errorf("the provided SubjectSet string is malformed")
+var ErrInvalidRelationTupleString = fmt.Errorf("the RelationTuple string is malformed")
 
 type Subject interface {
 	json.Marshaler

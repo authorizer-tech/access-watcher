@@ -2,22 +2,21 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	watcher "github.com/authorizer-tech/access-watcher/internal"
 	"github.com/doug-martin/goqu/v9"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type changelogDatastore struct {
-	pool *pgxpool.Pool
+	db *sql.DB
 }
 
-func NewChangelogDatastore(p *pgxpool.Pool) (watcher.ChangelogDatastore, error) {
+func NewChangelogDatastore(db *sql.DB) (watcher.ChangelogDatastore, error) {
 
 	c := &changelogDatastore{
-		pool: p,
+		db,
 	}
 	return c, nil
 }
@@ -38,7 +37,7 @@ func (ds *changelogDatastore) GetRelationTupleChanges(ctx context.Context, names
 		return nil, err
 	}
 
-	rows, err := ds.pool.Query(ctx, sql, params...)
+	rows, err := ds.db.Query(sql, params...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +47,7 @@ func (ds *changelogDatastore) GetRelationTupleChanges(ctx context.Context, names
 }
 
 type iterator struct {
-	rows pgx.Rows
+	rows *sql.Rows
 }
 
 func (i *iterator) Next() bool {

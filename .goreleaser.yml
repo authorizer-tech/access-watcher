@@ -23,12 +23,10 @@ archives:
 dockers:
   -
     image_templates:
-    - "iam/access-watcher:{{ .Tag }}"
-    - "iam/access-watcher:v{{ .Major }}"
-    - "iam/access-watcher:v{{ .Major }}.{{ .Minor }}"
-    - "iam/access-watcher:latest"
-    - "iam/access-watcher:zanzibar"
-    - "gcr.io/jon-whit/iam/access-watcher:zanzibar"
+    - "gcr.io/authorizer-tech/access-watcher:latest"
+    - "gcr.io/authorizer-tech/access-watcher:{{ .Tag }}"
+    - "gcr.io/authorizer-tech/access-watcher:v{{ .Major }}"
+    - "gcr.io/authorizer-tech/access-watcher:v{{ .Major }}.{{ .Minor }}"
     extra_files:
     - testdata
 checksum:

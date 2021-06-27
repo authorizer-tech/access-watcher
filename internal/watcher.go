@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	watchpb "github.com/authorizer-tech/access-watcher/gen/go/authorizer-tech/accesswatcher/v1alpha1"
+	watchpb "github.com/authorizer-tech/access-watcher/genprotos/authorizer/accesswatcher/v1alpha1"
 )
 
 type AccessWatcherOption func(*AccessWatcher)
@@ -87,9 +87,9 @@ func toWatchResponse(e *ChangelogEntry) (*watchpb.WatchResponse, error) {
 	var action watchpb.RelationTupleDelta_Action
 	switch e.Operation {
 	case "INSERT":
-		action = watchpb.RelationTupleDelta_INSERT
+		action = watchpb.RelationTupleDelta_ACTION_INSERT
 	case "DELETE":
-		action = watchpb.RelationTupleDelta_DELETE
+		action = watchpb.RelationTupleDelta_ACTION_DELETE
 	default:
 		action = watchpb.RelationTupleDelta_ACTION_UNSPECIFIED
 	}
