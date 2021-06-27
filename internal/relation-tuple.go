@@ -9,8 +9,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-var ErrInvalidSubjectSetString = fmt.Errorf("The provided SubjectSet string is malformed.")
-var ErrInvalidRelationTupleString = fmt.Errorf("The RelationTuple string is malformed.")
+var ErrInvalidSubjectSetString = fmt.Errorf("the provided SubjectSet string is malformed")
+var ErrInvalidRelationTupleString = fmt.Errorf("the RelationTuple string is malformed")
 
 type Subject interface {
 	json.Marshaler

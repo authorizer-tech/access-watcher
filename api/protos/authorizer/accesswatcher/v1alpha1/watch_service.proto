@@ -30,9 +30,9 @@ message RelationTupleDelta {
   enum Action {
     ACTION_UNSPECIFIED = 0;
 
-    INSERT = 1;
+    ACTION_INSERT = 1;
 
-    DELETE = 4;
+    ACTION_DELETE = 4;
   }
 
   Action action = 1;
