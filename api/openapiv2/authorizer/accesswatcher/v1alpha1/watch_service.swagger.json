@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "authorizer-tech/accesswatcher/v1alpha1/watch_service.proto",
+    "title": "authorizer/accesswatcher/v1alpha1/watch_service.proto",
     "version": "version not set"
   },
   "tags": [
