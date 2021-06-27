@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	watchpb "github.com/authorizer-tech/access-watcher/gen/go/authorizer-tech/accesswatcher/v1alpha1"
+	watchpb "github.com/authorizer-tech/access-watcher/genprotos/authorizer/accesswatcher/v1alpha1"
 	"github.com/pkg/errors"
 )
 

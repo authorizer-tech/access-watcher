@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	watchpb "github.com/authorizer-tech/access-watcher/gen/go/authorizer-tech/accesswatcher/v1alpha1"
+	watchpb "github.com/authorizer-tech/access-watcher/genprotos/authorizer/accesswatcher/v1alpha1"
 	watcher "github.com/authorizer-tech/access-watcher/internal"
 	"github.com/authorizer-tech/access-watcher/internal/datastores/postgres"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
