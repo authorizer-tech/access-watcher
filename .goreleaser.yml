@@ -14,12 +14,6 @@ builds:
     goos:
       - linux
       - darwin
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      386: i386
-      amd64: x86_64
 dockers:
   -
     image_templates:
@@ -27,8 +21,6 @@ dockers:
     - "gcr.io/authorizer-tech/access-watcher:{{ .Tag }}"
     - "gcr.io/authorizer-tech/access-watcher:v{{ .Major }}"
     - "gcr.io/authorizer-tech/access-watcher:v{{ .Major }}.{{ .Minor }}"
-    extra_files:
-    - testdata
 checksum:
   name_template: 'checksums.txt'
 snapshot:
