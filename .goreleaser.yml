@@ -2,8 +2,7 @@ project_name: access-watcher
 
 before:
   hooks:
-    - go mod download
-    - go generate ./...
+    - make generate
 builds:
   - main: ./cmd/access-watcher/main.go
     binary: bin/access-watcher
