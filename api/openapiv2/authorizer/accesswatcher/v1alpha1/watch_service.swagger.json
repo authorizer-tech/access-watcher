@@ -18,6 +18,7 @@
   "paths": {
     "/access-watcher/v1alpha1/watch": {
       "get": {
+        "summary": "Watches for changes to relation tuples in one or more namespaces.",
         "operationId": "WatchService_Watch",
         "responses": {
           "200": {
@@ -45,6 +46,7 @@
         "parameters": [
           {
             "name": "namespaces",
+            "description": "The namespaces to start watching for changes to.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -55,6 +57,7 @@
           },
           {
             "name": "snaptoken",
+            "description": "A snapshot token encoding a timestamp where changes should start watching from.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -74,7 +77,8 @@
         "ACTION_INSERT",
         "ACTION_DELETE"
       ],
-      "default": "ACTION_UNSPECIFIED"
+      "default": "ACTION_UNSPECIFIED",
+      "description": "An enumeration defining the actions or mutations that can be done on a RelationTuple.\n\n - ACTION_UNSPECIFIED: An unspecified action.\n\nThe `WriteRelationTuplesTxn` rpc ignores RelationTupleDeltas with\nan unspecified action.\n - ACTION_INSERT: Upserts a new RelationTuple.\n\nIf the RelationTuple already exists no modification is done.\n - ACTION_DELETE: Deletes the RelationTuple.\n\nIf the RelationTuple does not exist it's a no-op."
     },
     "protobufAny": {
       "type": "object",
@@ -115,50 +119,53 @@
         },
         "object": {
           "type": "string",
-          "description": "The object related by this tuple.\nObjects live within the namespace of the tuple."
+          "description": "The object identifier related by this tuple.\n\nObjects live within the namespace of the tuple."
         },
         "relation": {
           "type": "string",
-          "description": "The relation between an Object and a Subject."
+          "description": "The relation between the Object and the Subject."
         },
         "subject": {
           "$ref": "#/definitions/v1alpha1Subject",
-          "description": "The subject related by this tuple.\nA Subject either represents a concrete subject id or\na SubjectSet that expands to more Subjects."
+          "description": "The subject related by this tuple."
         }
       },
-      "description": "RelationTuple relates an Object with a Subject.\n\nWhile a tuple reflects a relationship between Object\nand Subject, they do not completely define the effective ACLs."
+      "description": "RelationTuple relates an object with a subject.\n\nWhile a tuple reflects a relationship between object\nand subject, they do not completely define the effective ACLs."
     },
     "v1alpha1RelationTupleDelta": {
       "type": "object",
       "properties": {
         "action": {
-          "$ref": "#/definitions/RelationTupleDeltaAction"
+          "$ref": "#/definitions/RelationTupleDeltaAction",
+          "description": "The action to do on the RelationTuple."
         },
         "relationTuple": {
-          "$ref": "#/definitions/v1alpha1RelationTuple"
+          "$ref": "#/definitions/v1alpha1RelationTuple",
+          "description": "The target RelationTuple."
         }
-      }
+      },
+      "description": "Write-delta for a WriteRelationTuplesTxnRequest."
     },
     "v1alpha1Subject": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "A concrete id of the subject."
+          "description": "A concrete subject id string for the subject."
         },
         "set": {
           "$ref": "#/definitions/v1alpha1SubjectSet",
-          "description": "A subject set that expands to more Subjects\n(used for inheritance)."
+          "description": "A SubjectSet that expands to more Subjects."
         }
       },
-      "description": "Subject is either a concrete subject id or\na subject set expanding to more Subjects."
+      "description": "Subject is either a concrete subject id string or\na SubjectSet expanding to more Subjects."
     },
     "v1alpha1SubjectSet": {
       "type": "object",
       "properties": {
         "namespace": {
           "type": "string",
-          "description": "The namespace of the object and relation\nreferenced in this subject set."
+          "description": "The namespace of the object and relation referenced in this SubjectSet."
         },
         "object": {
           "type": "string",
@@ -166,21 +173,24 @@
         },
         "relation": {
           "type": "string",
-          "description": "The relation to the object by the subjects."
+          "description": "The relation between the object and the subject(s)."
         }
       },
-      "description": "SubjectSet refers to all subjects which have\nthe same `relation` to an `object`.\nIt is also used for inheritance."
+      "description": "A SubjectSet refers to all subjects which have the same\nrelation to an object."
     },
     "v1alpha1WatchResponse": {
       "type": "object",
       "properties": {
         "relationTupleDelta": {
-          "$ref": "#/definitions/v1alpha1RelationTupleDelta"
+          "$ref": "#/definitions/v1alpha1RelationTupleDelta",
+          "description": "The relation tuple delta that occurred."
         },
         "snaptoken": {
-          "type": "string"
+          "type": "string",
+          "description": "A snapshot token encoding the timestamp of the relation tuple change."
         }
-      }
+      },
+      "description": "The response for a WatchService.Watch rpc."
     }
   }
 }
